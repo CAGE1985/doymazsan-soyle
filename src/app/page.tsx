@@ -213,9 +213,11 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center space-x-4"
             >
-              <img 
+              <Image 
                 src="/doymazsansoylelogo.png" 
                 alt="Doymazsan Söyle Logo" 
+                width={64}
+                height={64}
                 className="h-16 w-auto"
               />
               <div>
@@ -699,9 +701,11 @@ export default function Home() {
               className="text-center md:text-left"
             >
               <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
-                <img 
+                <Image 
                   src="/doymazsansoylelogo.png" 
                   alt="Doymazsan Söyle Logo" 
+                  width={48}
+                  height={48}
                   className="h-12 w-auto"
                 />
                 <div>

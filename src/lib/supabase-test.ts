@@ -15,10 +15,10 @@ export async function testSupabaseConnection() {
 
   try {
     // Basit bir bağlantı testi
-    const { data, error } = await supabase
-      .from('products')
-      .select('count')
-      .limit(1)
+    const { error } = await supabase
+    .from('products')
+    .select('*')
+    .limit(1)
     
     if (error) {
       console.error('❌ Supabase bağlantı hatası:', error.message)
