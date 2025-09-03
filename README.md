@@ -16,40 +16,6 @@ Doymazsan Söyle, restoran ve kafeler için geliştirilmiş modern bir dijital m
 - ⚡ **Hızlı Performans** - Next.js 15 ile optimize edilmiş
 - 🔒 **Güvenli** - Modern güvenlik standartları
 
-### 🛠️ Teknolojiler
-
-- **Frontend:** Next.js 15, React 18, TypeScript
-- **Styling:** Tailwind CSS, Framer Motion
-- **Database:** Supabase (PostgreSQL)
-- **Deployment:** Vercel
-- **Authentication:** Güvenli admin giriş sistemi
-
-## 🚀 Kurulum
-
-1. **Projeyi klonlayın:**
-```bash
-git clone https://github.com/[username]/doymazsan-soyle.git
-cd doymazsan-soyle
-```
-
-2. **Bağımlılıkları yükleyin:**
-```bash
-npm install
-```
-
-3. **Ortam değişkenlerini ayarlayın:**
-```bash
-cp .env.example .env.local
-```
-
-4. **Development server'ı başlatın:**
-```bash
-npm run dev
-```
-
-5. **Tarayıcıda açın:** [http://localhost:3000](http://localhost:3000)
-
-## 📋 Kullanım
 
 ### Müşteri Deneyimi
 - QR kod ile menüye erişim
@@ -57,20 +23,11 @@ npm run dev
 - Ürün detayları ve fiyat bilgileri
 - WhatsApp ile kolay sipariş
 
-### Admin Paneli
-- Güvenli giriş sistemi
-- Ürün ekleme/düzenleme/silme
-- Marka yönetimi
-- Kullanıcı ayarları
-
-## 🌐 Demo
-
-[Canlı Demo](https://doymazsan-soyle.vercel.app)
 
 ## 📞 İletişim
 
 Proje hakkında sorularınız için:
-- 📧 Email: [email]
+
 - 📱 WhatsApp: +90 530 771 07 60
 
 ## 📄 Lisans
@@ -81,9 +38,7 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 
 **Murat Kocataş** tarafından tasarlanmış ve geliştirilmiştir.
 
-- 🌐 Portfolio: [portfolio-link]
-- 💼 LinkedIn: [linkedin-profile]
-- 📧 Email: [email]
+
 
 ---
 

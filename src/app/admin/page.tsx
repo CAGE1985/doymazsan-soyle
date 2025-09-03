@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { supabase, Product, Option, Brand } from '@/lib/supabase'
 import Image from 'next/image'
 import crypto from 'crypto'
@@ -82,7 +83,7 @@ export default function AdminPanel() {
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [router])
 
   const fetchData = async () => {
     try {
@@ -652,7 +653,7 @@ export default function AdminPanel() {
             <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => setActiveTab('settings' as any)}
+                onClick={() => setActiveTab('settings' as 'products' | 'brands' | 'settings')}
                 className="text-gray-600 hover:text-gray-800 font-medium flex items-center space-x-1"
               >
                 <span>⚙️</span>
@@ -669,12 +670,12 @@ export default function AdminPanel() {
                 <span>🚪</span>
                 <span>Çıkış</span>
               </button>
-              <a
+              <Link
                 href="/"
                 className="text-blue-600 hover:text-blue-800 font-medium"
               >
                 ← Ana Sayfa
-              </a>
+              </Link>
             </div>
           </div>
         </div>
