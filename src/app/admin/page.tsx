@@ -79,7 +79,7 @@ export default function AdminPanel() {
 
   const [brandImagePreview, setBrandImagePreview] = useState<string>('')
 
-  const [productOptions, setProductOptions] = useState<{ option_name: string; option_price: number }[]>([])
+
 
   useEffect(() => {
     fetchData()
@@ -157,13 +157,10 @@ export default function AdminPanel() {
     }
   }
 
-  const getProductOptions = (productId: number) => {
-    return options.filter(option => option.product_id === productId)
-  }
+
 
   const resetProductForm = () => {
     setProductForm({ name: '', image_url: '', base_price: 0, description: '' })
-    setProductOptions([])
     setEditingProduct(null)
     setShowProductForm(false)
     setImagePreview('')
@@ -438,21 +435,7 @@ export default function AdminPanel() {
       if (productResult.data && productResult.data.length > 0) {
         const productId = productResult.data[0].id
         
-        // Delete existing options if editing
-        if (editingProduct) {
-          await supabase.from('options').delete().eq('product_id', productId)
-        }
-        
-        // Insert new options
-        if (productOptions.length > 0) {
-          const optionsToInsert = productOptions.map(opt => ({
-            product_id: productId,
-            option_name: opt.option_name,
-            option_price: opt.option_price
-          }))
-          
-          await supabase.from('options').insert(optionsToInsert)
-        }
+
       }
 
       await fetchData()
@@ -578,11 +561,7 @@ export default function AdminPanel() {
       setImagePreview(product.image_url)
     }
     
-    const existingOptions = getProductOptions(product.id)
-    setProductOptions(existingOptions.map(opt => ({
-      option_name: opt.option_name,
-      option_price: opt.option_price
-    })))
+
     
     setShowProductForm(true)
   }
@@ -602,19 +581,7 @@ export default function AdminPanel() {
     setShowBrandForm(true)
   }
 
-  const addOption = () => {
-    setProductOptions(prev => [...prev, { option_name: '', option_price: 0 }])
-  }
 
-  const removeOption = (index: number) => {
-    setProductOptions(prev => prev.filter((_, i) => i !== index))
-  }
-
-  const updateOption = (index: number, field: 'option_name' | 'option_price', value: string | number) => {
-    setProductOptions(prev => prev.map((opt, i) => 
-      i === index ? { ...opt, [field]: value } : opt
-    ))
-  }
 
   // Authentication loading
   if (authLoading) {
@@ -735,7 +702,6 @@ export default function AdminPanel() {
 
             <div className="grid gap-4">
               {products.map((product) => {
-                const productOpts = getProductOptions(product.id)
                 return (
                   <div key={product.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                     <div className="flex justify-between items-start">
@@ -759,18 +725,6 @@ export default function AdminPanel() {
                           <h3 className="font-semibold text-gray-900 mb-1">{product.name}</h3>
                           <p className="text-sm text-gray-600 mb-2">{product.description}</p>
                           <p className="text-lg font-bold text-green-600">{product.base_price.toFixed(2)} ₺</p>
-                          {productOpts.length > 0 && (
-                            <div className="mt-2">
-                              <p className="text-xs text-gray-500 mb-1">Seçenekler:</p>
-                              <div className="flex flex-wrap gap-1">
-                                {productOpts.map((opt) => (
-                                  <span key={opt.id} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                                    {opt.option_name} (+{opt.option_price.toFixed(2)} ₺)
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          )}
                         </div>
                       </div>
                       <div className="flex space-x-2">
@@ -1075,48 +1029,7 @@ export default function AdminPanel() {
                   />
                 </div>
 
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Seçenekler
-                    </label>
-                    <button
-                      type="button"
-                      onClick={addOption}
-                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                    >
-                      + Seçenek Ekle
-                    </button>
-                  </div>
-                  
-                  {productOptions.map((option, index) => (
-                    <div key={index} className="flex space-x-2 mb-2">
-                      <input
-                        type="text"
-                        placeholder="Seçenek adı (ör: Büyük Boy)"
-                        value={option.option_name}
-                        onChange={(e) => updateOption(index, 'option_name', e.target.value)}
-                        className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="Ek fiyat"
-                        value={option.option_price}
-                        onChange={(e) => updateOption(index, 'option_price', parseFloat(e.target.value) || 0)}
-                        className="w-24 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeOption(index)}
-                        className="text-red-600 hover:text-red-800 px-2"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
+
               </div>
 
               <div className="flex justify-end space-x-3 mt-6">

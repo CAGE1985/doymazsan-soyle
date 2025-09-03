@@ -12,7 +12,7 @@ export default function Home() {
   const [brands, setBrands] = useState<Brand[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
-  const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
+
   const [showProductModal, setShowProductModal] = useState(false)
   const [customerInfo, setCustomerInfo] = useState({ name: '', address: '', note: '' })
   const [showCheckout, setShowCheckout] = useState(false)
@@ -91,12 +91,14 @@ export default function Home() {
         ]
         
         const demoOptions: Option[] = [
-          { id: 1, product_id: 1, option_name: 'Küçük Boy', option_price: 0.00 },
-          { id: 2, product_id: 1, option_name: 'Büyük Boy', option_price: 5.00 },
-          { id: 3, product_id: 2, option_name: 'Küçük Boy', option_price: 0.00 },
-          { id: 4, product_id: 2, option_name: 'Büyük Boy', option_price: 5.00 },
-          { id: 5, product_id: 4, option_name: 'Tavuklu', option_price: 0.00 },
-          { id: 6, product_id: 4, option_name: 'Etli', option_price: 8.00 }
+          { id: 1, product_id: 1, option_name: 'SADE', option_price: 0.00, description: 'Sadece ekmek ve temel malzemeler' },
+          { id: 2, product_id: 1, option_name: 'SOSİSLİ', option_price: 50.00, description: 'Patates, sosis, salam, şinitsel, kaşar peyniri, turşu, ketçap, mayonez' },
+          { id: 3, product_id: 1, option_name: 'ŞİNİTZELLİ', option_price: 50.00, description: 'Patates, şinitzel, kaşar peyniri, turşu, ketçap, mayonez' },
+          { id: 4, product_id: 1, option_name: 'ATOM', option_price: 130.00, description: 'Patates, sosis, salam, şinitzel, kaşar peyniri, turşu, ketçap, mayonez - En doyurucu seçenek!' },
+          { id: 5, product_id: 2, option_name: 'Küçük Boy', option_price: 0.00, description: 'Standart porsiyon' },
+          { id: 6, product_id: 2, option_name: 'Büyük Boy', option_price: 5.00, description: 'Büyük porsiyon' },
+          { id: 7, product_id: 4, option_name: 'Tavuklu', option_price: 0.00, description: 'Tavuk eti ile hazırlanır' },
+          { id: 8, product_id: 4, option_name: 'Etli', option_price: 8.00, description: 'Dana eti ile hazırlanır' }
         ]
         
         const demoBrands: Brand[] = [
@@ -143,24 +145,21 @@ export default function Home() {
     }
   }
 
-  const getProductOptions = (productId: number) => {
-    return options.filter(option => option.product_id === productId)
-  }
+
 
   const openProductModal = (product: Product) => {
     setSelectedProduct(product)
-    setSelectedOptions([])
     setShowProductModal(true)
   }
 
   const addToCart = () => {
     if (!selectedProduct) return
 
-    const totalPrice = selectedProduct.base_price + selectedOptions.reduce((sum, opt) => sum + opt.option_price, 0)
+    const totalPrice = selectedProduct.base_price
     
     const cartItem: CartItem = {
       product: selectedProduct,
-      selectedOptions: [...selectedOptions],
+      selectedOptions: [],
       quantity: 1,
       totalPrice
     }
@@ -168,7 +167,6 @@ export default function Home() {
     setCart(prev => [...prev, cartItem])
     setShowProductModal(false)
     setSelectedProduct(null)
-    setSelectedOptions([])
   }
 
   const removeFromCart = (index: number) => {
@@ -252,20 +250,20 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-600 text-white">
         <div className="absolute inset-0 bg-orange-900/20"></div>
-        <div className="relative max-w-6xl mx-auto px-4 py-12">
+        <div className="relative max-w-6xl mx-auto px-4 py-6">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg">Lezzet Dolu Anlar</h2>
-            <p className="text-lg md:text-xl mb-6 text-orange-100 font-medium">Taze malzemelerle özel lezzetler</p>
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 drop-shadow-lg">Lezzet Dolu Anlar</h2>
+            <p className="text-base md:text-lg mb-4 text-orange-100 font-medium">Taze malzemelerle özel lezzetler</p>
             <motion.div 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="flex flex-wrap justify-center gap-2 text-xs md:text-sm"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2 max-w-md mx-auto text-xs md:text-sm"
             >
               <span className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-orange-300/30">🚀 Hızlı Teslimat</span>
               <span className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-orange-300/30">⭐ Premium Kalite</span>
@@ -273,13 +271,12 @@ export default function Home() {
             </motion.div>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-orange-50 to-transparent"></div>
       </section>
 
 
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 pb-24 pt-8">
+      <main className="max-w-6xl mx-auto px-4 pb-24 pt-4">
         {/* Products Grid */}
         <div className="mb-12">
           <motion.div 
@@ -290,7 +287,6 @@ export default function Home() {
             <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Menümüz</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product, index) => {
-                const productOptions = getProductOptions(product.id)
                 return (
                   <motion.div
                     key={product.id}
@@ -322,15 +318,9 @@ export default function Home() {
                             {product.base_price.toFixed(2)} ₺
                           </div>
                         </div>
-                        {productOptions.length > 0 && (
-                          <div className="absolute top-4 left-4">
-                            <div className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-full px-3 py-1 text-xs font-semibold border border-white/30">
-                              Seçenekli
-                            </div>
-                          </div>
-                        )}
+
                       </div>
-                      <div className="p-6">
+                      <div className="p-4">
                         <h3 className="font-bold text-xl text-orange-900 mb-2 group-hover:text-orange-700 transition-colors">{product.name}</h3>
                         <p className="text-orange-800/80 text-sm mb-4 line-clamp-2">{product.description}</p>
                         <div className="flex items-center justify-between">
@@ -468,11 +458,11 @@ export default function Home() {
                 initial={{ scale: 0.8, opacity: 0, y: 50 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.8, opacity: 0, y: 50 }}
-                className="bg-white/95 backdrop-blur-md w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border-2 border-orange-200"
+                className="bg-white/95 backdrop-blur-md w-full max-w-sm mx-4 rounded-2xl overflow-hidden shadow-2xl border-2 border-orange-200 max-h-[85vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Product Image */}
-                <div className="relative h-64 bg-gradient-to-br from-orange-50 to-yellow-50">
+                <div className="relative h-48 bg-gradient-to-br from-orange-50 to-yellow-50">
                   {selectedProduct.image_url ? (
                     <Image
                       src={selectedProduct.image_url}
@@ -495,10 +485,10 @@ export default function Home() {
                 </div>
               
               <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h2 className="text-2xl font-bold text-orange-900 mb-2 drop-shadow-sm">{selectedProduct.name}</h2>
-                    <div className="flex items-center space-x-2 mb-3">
+                    <h2 className="text-xl font-bold text-orange-900 mb-1 drop-shadow-sm">{selectedProduct.name}</h2>
+                    <div className="flex items-center space-x-2 mb-2">
                       <div className="flex items-center space-x-1">
                         <span className="text-yellow-400">⭐</span>
                         <span className="text-sm text-orange-700">4.8</span>
@@ -508,55 +498,29 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
+                    <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
                       {selectedProduct.base_price.toFixed(2)} ₺
                     </span>
                     <p className="text-xs text-orange-600">Başlangıç fiyatı</p>
                   </div>
                 </div>
                 
-                <p className="text-orange-800/90 mb-6 leading-relaxed">{selectedProduct.description}</p>
+                <p className="text-orange-800/90 mb-4 leading-relaxed text-sm">{selectedProduct.description}</p>
                 
-                {getProductOptions(selectedProduct.id).length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="font-bold text-orange-900 mb-4 text-lg">Seçenekler</h3>
-                    <div className="space-y-3">
-                      {getProductOptions(selectedProduct.id).map((option) => (
-                        <label key={option.id} className="flex items-center space-x-4 p-3 bg-orange-50 rounded-xl cursor-pointer hover:bg-orange-100 transition-colors border border-orange-200">
-                          <input
-                            type="checkbox"
-                            checked={selectedOptions.some(opt => opt.id === option.id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedOptions(prev => [...prev, option])
-                              } else {
-                                setSelectedOptions(prev => prev.filter(opt => opt.id !== option.id))
-                              }
-                            }}
-                            className="w-5 h-5 rounded border-orange-300 text-orange-600 focus:ring-orange-500 focus:ring-2"
-                          />
-                          <span className="flex-1 font-medium text-orange-900">{option.option_name}</span>
-                          <span className="font-bold text-orange-600">
-                            {option.option_price > 0 ? `+${option.option_price.toFixed(2)} ₺` : 'Ücretsiz'}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
+
                 
-                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl p-4 mb-6 border border-orange-200">
+                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-3 mb-4 border border-orange-200">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-orange-900">Toplam Tutar:</span>
-                    <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
-                      {(selectedProduct.base_price + selectedOptions.reduce((sum, opt) => sum + opt.option_price, 0)).toFixed(2)} ₺
+                    <span className="text-base font-semibold text-orange-900">Toplam Tutar:</span>
+                    <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
+                      {selectedProduct.base_price.toFixed(2)} ₺
                     </span>
                   </div>
                 </div>
                 
                 <button
                   onClick={addToCart}
-                  className="w-full bg-gradient-to-r from-orange-600 to-yellow-600 text-white py-4 rounded-2xl font-bold text-lg hover:from-orange-700 hover:to-yellow-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
+                  className="w-full bg-gradient-to-r from-orange-600 to-yellow-600 text-white py-3 rounded-xl font-bold text-base hover:from-orange-700 hover:to-yellow-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
                 >
                   Sepete Ekle 🛒
                 </button>
@@ -670,14 +634,14 @@ export default function Home() {
                 <div className="flex gap-4 mt-8">
                   <button
                     onClick={() => setShowCheckout(false)}
-                    className="flex-1 bg-orange-100 text-orange-800 py-4 rounded-xl font-bold hover:bg-orange-200 transition-colors border border-orange-300"
+                    className="flex-1 bg-orange-100 text-orange-800 py-3 rounded-xl font-medium hover:bg-orange-200 transition-colors border border-orange-300"
                   >
                     İptal
                   </button>
                   <button
                     onClick={sendWhatsAppOrder}
                     disabled={!customerInfo.name || !customerInfo.address}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-4 rounded-xl font-bold hover:from-orange-600 hover:to-yellow-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
                   >
                     <span>📱</span>
                     <span>WhatsApp ile Sipariş Ver</span>
