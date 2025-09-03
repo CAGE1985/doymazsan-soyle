@@ -173,13 +173,7 @@ export default function AdminLogin() {
           </button>
         </div>
 
-        {/* Demo Bilgileri */}
-        <div className="mt-8 p-4 bg-blue-500/20 border border-blue-500/50 rounded-lg">
-          <p className="text-blue-200 text-xs text-center mb-2">Demo Giriş Bilgileri:</p>
-          <p className="text-blue-100 text-xs text-center">Kullanıcı Adı: <strong>admin</strong></p>
-          <p className="text-blue-100 text-xs text-center">Şifre: <strong>admin123</strong></p>
-          <p className="text-yellow-200 text-xs text-center mt-2">⚠️ Giriş sonrası /admin sayfası mevcut değilse 404 hatası alabilirsiniz</p>
-        </div>
+
       </motion.div>
     </div>
   )
