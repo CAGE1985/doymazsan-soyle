@@ -232,7 +232,7 @@ export default function Home() {
       return `- ${item.product.name}${optionsText}`
     }).join('\n')}\n\n----------------------\n📋 Müşteri Notu: ${customerInfo.note || 'Yok'}\n\n💰 Toplam Tutar: ${getTotalPrice().toFixed(2)} ₺`
     
-    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '905xxxxxxxxx'
+    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '905307710760'
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderText)}`
     
     window.open(whatsappUrl, '_blank')
