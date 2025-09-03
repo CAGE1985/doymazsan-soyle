@@ -177,14 +177,34 @@ export default function Home() {
 
     const totalPrice = selectedProduct.base_price + option.option_price
     
-    const cartItem: CartItem = {
-      product: selectedProduct,
-      selectedOptions: [option],
-      quantity: 1,
-      totalPrice
-    }
-
-    setCart(prev => [...prev, cartItem])
+    setCart(prev => {
+      // Aynı ürün ve seçenek kombinasyonu var mı kontrol et
+      const existingItemIndex = prev.findIndex(item => 
+        item.product.id === selectedProduct.id && 
+        item.selectedOptions.length === 1 &&
+        item.selectedOptions[0].id === option.id
+      )
+      
+      if (existingItemIndex !== -1) {
+        // Varsa miktarı artır
+        const updatedCart = [...prev]
+        updatedCart[existingItemIndex] = {
+          ...updatedCart[existingItemIndex],
+          quantity: updatedCart[existingItemIndex].quantity + 1,
+          totalPrice: (updatedCart[existingItemIndex].quantity + 1) * totalPrice
+        }
+        return updatedCart
+      } else {
+        // Yoksa yeni öğe ekle
+        const cartItem: CartItem = {
+          product: selectedProduct,
+          selectedOptions: [option],
+          quantity: 1,
+          totalPrice
+        }
+        return [...prev, cartItem]
+      }
+    })
     
     // Sepete eklendi uyarısını göster
     setShowCartNotification(true)
@@ -196,14 +216,33 @@ export default function Home() {
 
     const totalPrice = selectedProduct.base_price
     
-    const cartItem: CartItem = {
-      product: selectedProduct,
-      selectedOptions: [],
-      quantity: 1,
-      totalPrice
-    }
-
-    setCart(prev => [...prev, cartItem])
+    setCart(prev => {
+      // Aynı ürün (seçeneksiz) var mı kontrol et
+      const existingItemIndex = prev.findIndex(item => 
+        item.product.id === selectedProduct.id && 
+        item.selectedOptions.length === 0
+      )
+      
+      if (existingItemIndex !== -1) {
+        // Varsa miktarı artır
+        const updatedCart = [...prev]
+        updatedCart[existingItemIndex] = {
+          ...updatedCart[existingItemIndex],
+          quantity: updatedCart[existingItemIndex].quantity + 1,
+          totalPrice: (updatedCart[existingItemIndex].quantity + 1) * totalPrice
+        }
+        return updatedCart
+      } else {
+        // Yoksa yeni öğe ekle
+        const cartItem: CartItem = {
+          product: selectedProduct,
+          selectedOptions: [],
+          quantity: 1,
+          totalPrice
+        }
+        return [...prev, cartItem]
+      }
+    })
     
     // Sepete eklendi uyarısını göster
     setShowCartNotification(true)
@@ -218,6 +257,25 @@ export default function Home() {
     setCart(prev => prev.filter((_, i) => i !== index))
   }
 
+  const updateCartItemQuantity = (index: number, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeFromCart(index)
+      return
+    }
+    
+    setCart(prev => {
+      const updatedCart = [...prev]
+      const item = updatedCart[index]
+      const unitPrice = item.totalPrice / item.quantity
+      updatedCart[index] = {
+        ...item,
+        quantity: newQuantity,
+        totalPrice: unitPrice * newQuantity
+      }
+      return updatedCart
+    })
+  }
+
   const clearCart = () => {
     setCart([])
   }
@@ -229,7 +287,7 @@ export default function Home() {
   const sendWhatsAppOrder = () => {
     const orderText = `Yeni Sipariş 🛎️\n\n👤 İsim Soyisim: ${customerInfo.name}\n📍 Adres: ${customerInfo.address}\n\n📝 Siparişler:\n${cart.map(item => {
       const optionsText = item.selectedOptions.length > 0 ? ` (${item.selectedOptions.map(opt => opt.option_name).join(', ')})` : ''
-      return `- ${item.product.name}${optionsText}`
+      return `- ${item.quantity} adet ${item.product.name}${optionsText} - ${item.totalPrice.toFixed(2)} ₺`
     }).join('\n')}\n\n----------------------\n📋 Müşteri Notu: ${customerInfo.note || 'Yok'}\n\n💰 Toplam Tutar: ${getTotalPrice().toFixed(2)} ₺`
     
     const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '905307710760'
@@ -691,6 +749,25 @@ export default function Home() {
                             </span>
                           </div>
                           )}
+                          
+                          {/* Miktar Kontrolü */}
+                          <div className="flex items-center mt-2 space-x-2">
+                            <button
+                              onClick={() => updateCartItemQuantity(index, item.quantity - 1)}
+                              className="w-7 h-7 bg-orange-100 hover:bg-orange-200 text-orange-600 rounded-full flex items-center justify-center transition-colors border border-orange-300"
+                            >
+                              <span className="text-sm font-bold">−</span>
+                            </button>
+                            <span className="text-sm font-semibold text-gray-700 min-w-[2rem] text-center">
+                              {item.quantity} adet
+                            </span>
+                            <button
+                              onClick={() => updateCartItemQuantity(index, item.quantity + 1)}
+                              className="w-7 h-7 bg-orange-100 hover:bg-orange-200 text-orange-600 rounded-full flex items-center justify-center transition-colors border border-orange-300"
+                            >
+                              <span className="text-sm font-bold">+</span>
+                            </button>
+                          </div>
                         </div>
                         <div className="text-right ml-4">
                           <span className="font-bold text-orange-600">{item.totalPrice.toFixed(2)} ₺</span>
