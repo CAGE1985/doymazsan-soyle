@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://doymazsan-soyle.vercel.app/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin/
+Disallow: /admin/login/
+
+# Allow all other pages
+Allow: /
+Allow: /api/
+
+# Crawl-delay
+Crawl-delay: 1

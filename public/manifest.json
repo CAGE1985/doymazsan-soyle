@@ -1,0 +1,35 @@
+{
+  "name": "Doymazsan Söyle - Dijital Menü",
+  "short_name": "Doymazsan Söyle",
+  "description": "Modern dijital menü sistemi ile lezzetli yemekleri keşfedin ve WhatsApp üzerinden kolayca sipariş verin.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ea580c",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "tr",
+  "icons": [
+    {
+      "src": "/doymazsansoylelogo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/doymazsansoylelogo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "business", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/doymazsansoylelogo.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
