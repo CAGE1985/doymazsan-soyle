@@ -17,6 +17,8 @@ export default function Home() {
   const [customerInfo, setCustomerInfo] = useState({ name: '', address: '', note: '' })
   const [showCheckout, setShowCheckout] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [showCartNotification, setShowCartNotification] = useState(false)
+  const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
 
   useEffect(() => {
     fetchData()
@@ -149,7 +151,44 @@ export default function Home() {
 
   const openProductModal = (product: Product) => {
     setSelectedProduct(product)
+    setSelectedOptions([])
     setShowProductModal(true)
+  }
+
+  const addOptionToSelection = (option: Option) => {
+    setSelectedOptions(prev => {
+      const isAlreadySelected = prev.find(opt => opt.id === option.id)
+      if (isAlreadySelected) {
+        return prev.filter(opt => opt.id !== option.id)
+      } else {
+        return [...prev, option]
+      }
+    })
+  }
+
+  const calculateTotalPrice = () => {
+    if (!selectedProduct) return 0
+    const optionsTotal = selectedOptions.reduce((sum, option) => sum + option.option_price, 0)
+    return selectedProduct.base_price + optionsTotal
+  }
+
+  const addSingleOptionToCart = (option: Option) => {
+    if (!selectedProduct) return
+
+    const totalPrice = selectedProduct.base_price + option.option_price
+    
+    const cartItem: CartItem = {
+      product: selectedProduct,
+      selectedOptions: [option],
+      quantity: 1,
+      totalPrice
+    }
+
+    setCart(prev => [...prev, cartItem])
+    
+    // Sepete eklendi uyarısını göster
+    setShowCartNotification(true)
+    setTimeout(() => setShowCartNotification(false), 3000)
   }
 
   const addToCart = () => {
@@ -165,12 +204,22 @@ export default function Home() {
     }
 
     setCart(prev => [...prev, cartItem])
-    setShowProductModal(false)
-    setSelectedProduct(null)
+    
+    // Sepete eklendi uyarısını göster
+    setShowCartNotification(true)
+    setTimeout(() => setShowCartNotification(false), 3000)
+    
+    // Modal'ı kapatmıyoruz - kullanıcı başka ürün ekleyebilsin
+    // setShowProductModal(false)
+    // setSelectedProduct(null)
   }
 
   const removeFromCart = (index: number) => {
     setCart(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const clearCart = () => {
+    setCart([])
   }
 
   const getTotalPrice = () => {
@@ -313,15 +362,28 @@ export default function Home() {
                             </div>
                           )}
                         </div>
-                        <div className="absolute top-4 right-4">
-                          <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-orange-900 rounded-full px-3 py-1 text-sm font-bold border border-white/30">
-                            {product.base_price.toFixed(2)} ₺
-                          </div>
+                        
+                        {/* Seçenekli Butonu - Sol Üst Köşe */}
+                        <div className="absolute top-3 left-3">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              openProductModal(product)
+                            }}
+                            className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-full px-4 py-2 text-sm font-bold hover:from-orange-600 hover:to-yellow-600 transition-all duration-300 shadow-xl border-2 border-white/50 transform hover:scale-105"
+                          >
+                            🍽️ Seçenekli
+                          </button>
                         </div>
 
                       </div>
                       <div className="p-4">
-                        <h3 className="font-bold text-xl text-orange-900 mb-2 group-hover:text-orange-700 transition-colors">{product.name}</h3>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-bold text-xl text-orange-900 group-hover:text-orange-700 transition-colors flex-1">{product.name}</h3>
+                          <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-orange-900 rounded-full px-3 py-1 text-sm font-bold border border-orange-200 ml-3 shadow-sm">
+                            {product.base_price.toFixed(2)} ₺
+                          </div>
+                        </div>
                         <p className="text-orange-800/80 text-sm mb-4 line-clamp-2">{product.description}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-1">
@@ -444,6 +506,25 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+      {/* Sepete Eklendi Uyarısı */}
+      <AnimatePresence>
+        {showCartNotification && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: -50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -50 }}
+            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-[60] pointer-events-none"
+          >
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-2xl shadow-2xl border-2 border-green-300/50 backdrop-blur-md">
+              <div className="flex items-center space-x-2">
+                <span className="text-lg">✅</span>
+                <span className="font-bold text-sm">Sepete Eklendi!</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Product Modal */}
       <AnimatePresence>
         {showProductModal && selectedProduct && (
@@ -507,23 +588,62 @@ export default function Home() {
                 
                 <p className="text-orange-800/90 mb-4 leading-relaxed text-sm">{selectedProduct.description}</p>
                 
-
+                {/* Seçenekler */}
+                {options.filter(option => option.product_id === selectedProduct.id).length > 0 && (
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-orange-900 mb-3">Seçenekler</h3>
+                    <div className="space-y-2">
+                      {options.filter(option => option.product_id === selectedProduct.id).map((option) => (
+                        <div key={option.id} className="bg-white/80 backdrop-blur-sm rounded-lg p-3 border border-orange-200 hover:border-orange-300 transition-all duration-200">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2">
+                                <span className="font-medium text-orange-900">{option.option_name}</span>
+                                {option.option_price > 0 && (
+                                  <span className="text-sm font-semibold text-green-600">+{option.option_price.toFixed(2)} ₺</span>
+                                )}
+                              </div>
+                              <p className="text-xs text-orange-700 mt-1">{option.description}</p>
+                            </div>
+                            <button 
+                               onClick={(e) => {
+                                 e.stopPropagation()
+                                 addSingleOptionToCart(option)
+                               }}
+                               className="ml-3 w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full flex items-center justify-center hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-110 shadow-lg border-2 border-white/30"
+                             >
+                               <span className="text-sm font-bold">🛒</span>
+                             </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 
                 <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-3 mb-4 border border-orange-200">
                   <div className="flex justify-between items-center">
-                    <span className="text-base font-semibold text-orange-900">Toplam Tutar:</span>
+                    <span className="text-base font-semibold text-orange-900">Temel Fiyat:</span>
                     <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
                       {selectedProduct.base_price.toFixed(2)} ₺
                     </span>
                   </div>
+                  <div className="mt-2 pt-2 border-t border-orange-200">
+                    <p className="text-xs text-orange-700 text-center">
+                      💡 Her seçeneği ayrı ayrı sepete ekleyebilirsiniz
+                    </p>
+                  </div>
                 </div>
                 
-                <button
-                  onClick={addToCart}
-                  className="w-full bg-gradient-to-r from-orange-600 to-yellow-600 text-white py-3 rounded-xl font-bold text-base hover:from-orange-700 hover:to-yellow-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
-                >
-                  Sepete Ekle 🛒
-                </button>
+                {/* Ana Sepete Ekle Butonu - Sadece seçeneksiz ürünlerde göster */}
+                {options.filter(option => option.product_id === selectedProduct.id).length === 0 && (
+                  <button
+                    onClick={addToCart}
+                    className="w-full bg-gradient-to-r from-orange-600 to-yellow-600 text-white py-3 rounded-xl font-bold text-base hover:from-orange-700 hover:to-yellow-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
+                  >
+                    Sepete Ekle 🛒
+                  </button>
+                )}
               </div>
             </motion.div>
           </motion.div>
@@ -586,6 +706,16 @@ export default function Home() {
                     <div className="flex justify-between items-center pt-4 border-t-2 border-orange-200">
                       <span className="text-lg font-bold text-orange-900">Toplam Tutar:</span>
                       <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">{getTotalPrice().toFixed(2)} ₺</span>
+                    </div>
+                    
+                    {/* Sepeti Temizle Butonu */}
+                    <div className="pt-3 border-t border-orange-200 mt-3">
+                      <button
+                        onClick={clearCart}
+                        className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 rounded-lg font-medium text-sm hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-[1.02] shadow-md"
+                      >
+                        🗑️ Sepeti Temizle
+                      </button>
                     </div>
                   </div>
                 </div>
