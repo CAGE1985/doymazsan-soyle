@@ -376,40 +376,6 @@ export default function Home() {
             transition={{ delay: 0.4 }}
           >
             <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Menümüz</h3>
-            
-            {/* Kampanya Banner */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className="mb-8 relative overflow-hidden rounded-2xl shadow-xl"
-            >
-              <div className="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-500 p-6 text-white relative">
-                <div className="absolute inset-0 bg-black/10"></div>
-                <div className="relative flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
-                      <span className="text-3xl">🛵</span>
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold mb-1">Tüm Gel Al Siparişlerde</h4>
-                      <p className="text-white/90 text-sm">Hızlı teslimat garantisi</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="bg-white text-red-600 rounded-full px-4 py-2 font-bold text-2xl shadow-lg">
-                      10% İNDİRİM
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4 bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
-                  <div className="flex items-center justify-center space-x-2">
-                    <span className="text-green-400 text-xl">📞</span>
-                    <span className="text-xl font-bold">530 771 0760</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product, index) => {
                 return (
@@ -542,6 +508,62 @@ export default function Home() {
             </div>
           </motion.div>
         )}
+
+        {/* Kampanya Banner - Güvenilir Markalarımız Altında */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.7 }}
+          className="mb-12 relative overflow-hidden rounded-3xl shadow-2xl"
+        >
+          <div className="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-500 p-8 text-white relative">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="relative">
+              {/* Üst Kısım - Ana Başlık */}
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-full p-4 mb-4">
+                  <span className="text-4xl">🛵</span>
+                </div>
+                <h4 className="text-3xl font-bold mb-2">Tüm Gel Al Siparişlerde</h4>
+                <p className="text-white/90 text-lg">Hızlı teslimat garantisi</p>
+              </div>
+              
+              {/* Orta Kısım - Özellik Butonları */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30 hover:bg-white/30 transition-all duration-300">
+                  <div className="text-2xl mb-2">🚀</div>
+                  <div className="font-bold text-lg">Hızlı Teslimat</div>
+                  <div className="text-white/80 text-sm">30 dk içinde</div>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30 hover:bg-white/30 transition-all duration-300">
+                  <div className="text-2xl mb-2">⭐</div>
+                  <div className="font-bold text-lg">Premium Kalite</div>
+                  <div className="text-white/80 text-sm">Taze malzemeler</div>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30 hover:bg-white/30 transition-all duration-300">
+                  <div className="text-2xl mb-2">💯</div>
+                  <div className="font-bold text-lg">Müşteri Memnuniyeti</div>
+                  <div className="text-white/80 text-sm">%100 garanti</div>
+                </div>
+              </div>
+              
+              {/* Alt Kısım - İndirim ve İletişim */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white text-red-600 rounded-2xl p-6 text-center shadow-xl">
+                  <div className="text-4xl font-bold mb-2">10% İNDİRİM</div>
+                  <div className="text-red-500 text-sm font-medium">Tüm siparişlerde geçerli</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/30">
+                  <div className="flex items-center justify-center space-x-3 mb-2">
+                    <span className="text-green-400 text-2xl">📞</span>
+                    <span className="text-2xl font-bold">530 771 0760</span>
+                  </div>
+                  <div className="text-white/80 text-sm">Hemen ara, sipariş ver!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </main>
 
       {/* Cart Summary - Fixed Bottom */}
