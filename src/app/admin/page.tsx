@@ -981,7 +981,7 @@ export default function AdminPanel() {
                         <div className="flex-1">
                           <h3 className="font-semibold text-gray-900 mb-1">{product.name}</h3>
                           <p className="text-sm text-gray-600 mb-2">{product.description}</p>
-                          <p className="text-lg font-bold text-green-600">{product.base_price.toFixed(2)} ₺</p>
+                          <p className="text-lg font-bold text-green-600">{Math.round(product.base_price)}₺</p>
                           
                           {/* Seçenekler */}
                           {productOptions.length > 0 && (

@@ -287,8 +287,8 @@ export default function Home() {
   const sendWhatsAppOrder = () => {
     const orderText = `Yeni Sipariş 🛎️\n\n👤 İsim Soyisim: ${customerInfo.name}\n📍 Adres: ${customerInfo.address}\n\n📝 Siparişler:\n${cart.map(item => {
       const optionsText = item.selectedOptions.length > 0 ? ` (${item.selectedOptions.map(opt => opt.option_name).join(', ')})` : ''
-      return `- ${item.quantity} adet ${item.product.name}${optionsText} - ${item.totalPrice.toFixed(2)} ₺`
-    }).join('\n')}\n\n----------------------\n📋 Müşteri Notu: ${customerInfo.note || 'Yok'}\n\n💰 Toplam Tutar: ${getTotalPrice().toFixed(2)} ₺`
+      return `- ${item.quantity} adet ${item.product.name}${optionsText} - ${Math.round(item.totalPrice)}₺`
+    }).join('\n')}\n\n----------------------\n📋 Müşteri Notu: ${customerInfo.note || 'Yok'}\n\n💰 Toplam Tutar: ${Math.round(getTotalPrice())}₺`
     
     const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '905307710760'
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderText)}`
@@ -393,7 +393,12 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Menümüz</h3>
+            <div className="text-center mb-8">
+              <h3 className="inline-block text-4xl font-bold text-black px-8 py-4 bg-gradient-to-r from-orange-100 via-yellow-50 to-orange-100 rounded-2xl border-2 border-orange-300 shadow-lg backdrop-blur-sm relative overflow-hidden">
+                 <span className="absolute inset-0 bg-gradient-to-r from-orange-200/30 via-yellow-100/30 to-orange-200/30 rounded-2xl"></span>
+                 <span className="relative z-10">🍽️ Menümüz 🍽️</span>
+               </h3>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product, index) => {
                 return (
@@ -443,10 +448,12 @@ export default function Home() {
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-bold text-xl text-orange-900 group-hover:text-orange-700 transition-colors flex-1">{product.name}</h3>
                           <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-orange-900 rounded-full px-3 py-1 text-sm font-bold border border-orange-200 ml-3 shadow-sm">
-                            {product.base_price.toFixed(2)} ₺
+                            {Math.round(product.base_price)}₺
                           </div>
                         </div>
-                        <p className="text-orange-800/80 text-sm mb-4 line-clamp-2">{product.description}</p>
+                        <div className="bg-orange-50/50 rounded-lg p-3 border-l-4 border-orange-300 mb-4 h-16 overflow-hidden">
+                          <p className="text-orange-800/70 text-sm line-clamp-2 leading-relaxed font-medium">{product.description}</p>
+                        </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-1">
                             <span className="text-yellow-400">⭐</span>
@@ -608,7 +615,7 @@ export default function Home() {
                 </div>
                 <div className="text-right">
                   <span className="font-bold text-2xl bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
-                    {getTotalPrice().toFixed(2)} ₺
+                    {Math.round(getTotalPrice())}₺
                   </span>
                   <p className="text-xs text-orange-600">Toplam tutar</p>
                 </div>
@@ -698,13 +705,15 @@ export default function Home() {
                   </div>
                   <div className="text-right">
                     <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
-                      {selectedProduct.base_price.toFixed(2)} ₺
+                      {Math.round(selectedProduct.base_price)}₺
                     </span>
-                    <p className="text-xs text-orange-600">Başlangıç fiyatı</p>
+
                   </div>
                 </div>
                 
-                <p className="text-orange-800/90 mb-4 leading-relaxed text-sm">{selectedProduct.description}</p>
+                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-4 mb-4 border border-orange-200">
+                  <p className="text-orange-800 leading-relaxed text-sm font-medium">{selectedProduct.description}</p>
+                </div>
                 
                 {/* Seçenekler */}
                 {options.filter(option => option.product_id === selectedProduct.id).length > 0 && (
@@ -718,7 +727,7 @@ export default function Home() {
                               <div className="flex items-center space-x-2">
                                 <span className="font-medium text-orange-900">{option.option_name}</span>
                                 {option.option_price > 0 && (
-                                  <span className="text-sm font-semibold text-green-600">+{option.option_price.toFixed(2)} ₺</span>
+                                  <span className="text-sm font-semibold text-green-600">+{Math.round(option.option_price)}₺</span>
                                 )}
                               </div>
 
@@ -743,7 +752,7 @@ export default function Home() {
                   <div className="flex justify-between items-center">
                     <span className="text-base font-semibold text-orange-900">Temel Fiyat:</span>
                     <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
-                      {selectedProduct.base_price.toFixed(2)} ₺
+                      {Math.round(selectedProduct.base_price)}₺
                     </span>
                   </div>
                   <div className="mt-2 pt-2 border-t border-orange-200">
@@ -843,7 +852,7 @@ export default function Home() {
                           </div>
                         </div>
                         <div className="text-right ml-4">
-                          <span className="font-bold text-orange-600">{item.totalPrice.toFixed(2)} ₺</span>
+                          <span className="font-bold text-orange-600">{Math.round(item.totalPrice)}₺</span>
                           <button
                             onClick={() => removeFromCart(index)}
                             className="block text-xs text-orange-500 hover:text-orange-700 mt-1 transition-colors"
@@ -855,7 +864,7 @@ export default function Home() {
                     ))}
                     <div className="flex justify-between items-center pt-4 border-t-2 border-orange-200">
                       <span className="text-lg font-bold text-orange-900">Toplam Tutar:</span>
-                      <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">{getTotalPrice().toFixed(2)} ₺</span>
+                      <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">{Math.round(getTotalPrice())}₺</span>
                     </div>
                     
                     {/* Sepeti Temizle Butonu */}
