@@ -25,7 +25,6 @@ export interface Option {
   product_id: number
   option_name: string
   option_price: number
-  description?: string
   created_at?: string
 }
 
