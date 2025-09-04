@@ -155,22 +155,7 @@ export default function Home() {
     setShowProductModal(true)
   }
 
-  const addOptionToSelection = (option: Option) => {
-    setSelectedOptions(prev => {
-      const isAlreadySelected = prev.find(opt => opt.id === option.id)
-      if (isAlreadySelected) {
-        return prev.filter(opt => opt.id !== option.id)
-      } else {
-        return [...prev, option]
-      }
-    })
-  }
 
-  const calculateTotalPrice = () => {
-    if (!selectedProduct) return 0
-    const optionsTotal = selectedOptions.reduce((sum, option) => sum + option.option_price, 0)
-    return selectedProduct.base_price + optionsTotal
-  }
 
   const addSingleOptionToCart = (option: Option) => {
     if (!selectedProduct) return

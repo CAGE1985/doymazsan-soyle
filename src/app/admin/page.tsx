@@ -60,7 +60,7 @@ export default function AdminPanel() {
     }
     
     checkAuth()
-  }, [])
+  }, [router])
 
   // Form states
   const [productForm, setProductForm] = useState({
@@ -1217,7 +1217,7 @@ export default function AdminPanel() {
                   </div>
                   
                   <div className="mt-3 text-xs text-gray-500">
-                    💡 İpucu: Seçenekler ürünün temel fiyatına eklenir. Örneğin "Büyük Boy +5₺" gibi.
+                    💡 İpucu: Seçenekler ürünün temel fiyatına eklenir. Örneğin &quot;Büyük Boy +5₺&quot; gibi.
                   </div>
                 </div>
 
