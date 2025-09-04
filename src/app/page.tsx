@@ -529,21 +529,21 @@ export default function Home() {
               </div>
               
               {/* Orta Kısım - Özellik Butonları */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30 hover:bg-white/30 transition-all duration-300">
-                  <div className="text-2xl mb-2">🚀</div>
-                  <div className="font-bold text-lg">Hızlı Teslimat</div>
-                  <div className="text-white/80 text-sm">30 dk içinde</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 mb-6">
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 lg:p-8 text-center border border-white/30 hover:bg-white/30 transition-all duration-300 min-h-[140px] lg:min-h-[160px] flex flex-col justify-center">
+                  <div className="text-3xl lg:text-4xl mb-3">🚀</div>
+                  <div className="font-bold text-lg lg:text-xl mb-2">Hızlı Teslimat</div>
+                  <div className="text-white/80 text-sm lg:text-base">30 dk içinde</div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30 hover:bg-white/30 transition-all duration-300">
-                  <div className="text-2xl mb-2">⭐</div>
-                  <div className="font-bold text-lg">Premium Kalite</div>
-                  <div className="text-white/80 text-sm">Taze malzemeler</div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 lg:p-8 text-center border border-white/30 hover:bg-white/30 transition-all duration-300 min-h-[140px] lg:min-h-[160px] flex flex-col justify-center">
+                  <div className="text-3xl lg:text-4xl mb-3">⭐</div>
+                  <div className="font-bold text-lg lg:text-xl mb-2">Premium Kalite</div>
+                  <div className="text-white/80 text-sm lg:text-base">Taze malzemeler</div>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/30 hover:bg-white/30 transition-all duration-300">
-                  <div className="text-2xl mb-2">💯</div>
-                  <div className="font-bold text-lg">Müşteri Memnuniyeti</div>
-                  <div className="text-white/80 text-sm">%100 garanti</div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 lg:p-8 text-center border border-white/30 hover:bg-white/30 transition-all duration-300 min-h-[140px] lg:min-h-[160px] flex flex-col justify-center">
+                  <div className="text-3xl lg:text-4xl mb-3">💯</div>
+                  <div className="font-bold text-lg lg:text-xl mb-2 leading-tight">Müşteri<br className="sm:hidden" /> Memnuniyeti</div>
+                  <div className="text-white/80 text-sm lg:text-base">%100 garanti</div>
                 </div>
               </div>
               
