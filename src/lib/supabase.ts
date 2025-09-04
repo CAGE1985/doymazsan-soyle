@@ -4,11 +4,21 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://demo.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'demo-key'
 
+// Debug: Environment değişkenlerini kontrol et
+console.log('🔍 Environment Debug:', {
+  url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  keyExists: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  supabaseUrl,
+  supabaseAnonKey: supabaseAnonKey.substring(0, 20) + '...'
+})
+
 // Supabase client oluştur
 // Eğer environment değişkenleri yoksa veya demo değerleri varsa null döndür
 export const supabase = (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
   process.env.NEXT_PUBLIC_SUPABASE_URL.includes('your-project') || 
   supabaseAnonKey === 'demo-key') ? null : createClient(supabaseUrl, supabaseAnonKey)
+
+console.log('🔗 Supabase Client:', supabase ? 'CREATED' : 'NULL (Demo mode)')
 
 // Database Types
 export interface Product {

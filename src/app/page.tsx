@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Home() {
+  console.log('🏠 Home bileşeni render ediliyor')
   const [products, setProducts] = useState<Product[]>([])
   const [options, setOptions] = useState<Option[]>([])
   const [brands, setBrands] = useState<Brand[]>([])
@@ -20,15 +21,22 @@ export default function Home() {
   const [showCartNotification, setShowCartNotification] = useState(false)
 
 
+  console.log('🔄 useEffect tanımlanıyor...')
+  
   useEffect(() => {
+    console.log('🔄 useEffect çalıştı! - TEST')
     fetchData()
   }, [])
+  
+  console.log('🔄 useEffect tanımlandı')
 
   const fetchData = async () => {
+    console.log('🚀 fetchData başlatıldı')
     try {
       // Supabase bağlantısını test et
       const connectionTest = await testSupabaseConnection()
-      console.log('Supabase bağlantı durumu:', connectionTest)
+      console.log('🔍 Supabase bağlantı durumu:', connectionTest)
+      console.log('🔍 Supabase client durumu:', supabase ? 'VAR' : 'YOK')
       
       // Demo veriler - gerçek projede Supabase'den çekilecek
       if (!supabase) {
@@ -117,13 +125,21 @@ export default function Home() {
       } else {
         // Veri yükleme testini çalıştır
         const dataTest = await loadInitialData()
-        console.log('Veri yükleme testi:', dataTest)
+        console.log('🔍 Veri yükleme testi:', dataTest)
         
+        console.log('🔍 Supabase sorgularını başlatıyor...')
         const [productsRes, optionsRes, brandsRes] = await Promise.all([
           supabase.from('products').select('*').order('order_index', { ascending: true, nullsFirst: false }),
           supabase.from('options').select('*'),
           supabase.from('brands').select('*')
         ])
+        console.log('🔍 Supabase sorguları tamamlandı')
+
+        console.log('🔍 Supabase Responses:', {
+          productsRes: { data: productsRes.data?.length, error: productsRes.error },
+          optionsRes: { data: optionsRes.data?.length, error: optionsRes.error },
+          brandsRes: { data: brandsRes.data?.length, error: brandsRes.error }
+        })
 
         if (productsRes.data) setProducts(productsRes.data)
         if (optionsRes.data) setOptions(optionsRes.data)
@@ -279,6 +295,8 @@ export default function Home() {
     
     window.open(whatsappUrl, '_blank')
   }
+
+  console.log('🔍 Render Debug:', { loading, productsCount: products.length, optionsCount: options.length })
 
   if (loading) {
     return (

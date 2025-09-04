@@ -1,4 +1,7 @@
 -- RLS Policy'lerini düzeltme scripti
+-- Order index kolonunu ekle
+ALTER TABLE products ADD COLUMN IF NOT EXISTS order_index INTEGER DEFAULT 0;
+
 -- Önce mevcut policy'leri drop et
 DROP POLICY IF EXISTS "Public write access for products" ON products;
 DROP POLICY IF EXISTS "Public write access for options" ON options;
