@@ -159,7 +159,7 @@ export default function Home() {
   const addSingleOptionToCart = (option: Option) => {
     if (!selectedProduct) return
 
-    const totalPrice = selectedProduct.base_price + option.option_price
+    const totalPrice = option.option_price
     
     setCart(prev => {
       // Aynı ürün ve seçenek kombinasyonu var mı kontrol et

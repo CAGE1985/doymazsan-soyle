@@ -1261,7 +1261,7 @@ export default function AdminPanel() {
                   </div>
                   
                   <div className="mt-3 text-xs text-gray-500">
-                    💡 İpucu: Seçenekler ürünün temel fiyatına eklenir. Örneğin &quot;Büyük Boy +5₺&quot; gibi.
+                    💡 İpucu: Her seçenek kendi belirlenen fiyatıyla sepete eklenir. Temel fiyata eklenmez.
                   </div>
                 </div>
 
