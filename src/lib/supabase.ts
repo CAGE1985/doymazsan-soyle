@@ -7,7 +7,6 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'demo-key'
 // Supabase client oluştur
 // Eğer environment değişkenleri yoksa veya demo değerleri varsa null döndür
 export const supabase = (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
-  process.env.NEXT_PUBLIC_SUPABASE_URL.includes('demo') || 
   process.env.NEXT_PUBLIC_SUPABASE_URL.includes('your-project') || 
   supabaseAnonKey === 'demo-key') ? null : createClient(supabaseUrl, supabaseAnonKey)
 
