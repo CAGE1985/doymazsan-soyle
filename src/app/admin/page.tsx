@@ -71,6 +71,14 @@ export default function AdminPanel() {
   })
 
   const [imagePreview, setImagePreview] = useState<string>('')
+  
+  // Seçenek yönetimi için state'ler
+  const [productOptions, setProductOptions] = useState<Option[]>([])
+  const [newOption, setNewOption] = useState({
+    option_name: '',
+    option_price: 0,
+    description: ''
+  })
 
   const [brandForm, setBrandForm] = useState({
     name: '',
@@ -164,6 +172,40 @@ export default function AdminPanel() {
     setEditingProduct(null)
     setShowProductForm(false)
     setImagePreview('')
+    setProductOptions([])
+    setNewOption({
+      option_name: '',
+      option_price: 0,
+      description: ''
+    })
+  }
+
+  // Seçenek ekleme fonksiyonu
+  const addOption = () => {
+    if (!newOption.option_name.trim()) {
+      alert('Seçenek adı gereklidir!')
+      return
+    }
+    
+    const option: Option = {
+      id: Date.now(), // Geçici ID
+      product_id: 0, // Ürün kaydedildikten sonra güncellenecek
+      option_name: newOption.option_name,
+      option_price: newOption.option_price,
+      description: newOption.description
+    }
+    
+    setProductOptions(prev => [...prev, option])
+    setNewOption({
+      option_name: '',
+      option_price: 0,
+      description: ''
+    })
+  }
+
+  // Seçenek silme fonksiyonu
+  const removeOption = (optionId: number) => {
+    setProductOptions(prev => prev.filter(opt => opt.id !== optionId))
   }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -399,6 +441,14 @@ export default function AdminPanel() {
               : p
           )
           setProducts(updatedProducts)
+          
+          // Demo modunda seçenekleri güncelle
+          const updatedOptions = options.filter(opt => opt.product_id !== editingProduct.id)
+          const newOptions = productOptions.map(option => ({
+            ...option,
+            product_id: editingProduct.id
+          }))
+          setOptions([...updatedOptions, ...newOptions])
         } else {
           const newId = Math.max(...products.map(p => p.id)) + 1
           const newProduct: Product = {
@@ -406,6 +456,14 @@ export default function AdminPanel() {
             ...productForm
           }
           setProducts([...products, newProduct])
+          
+          // Demo modunda seçenekleri ekle
+          const newOptions = productOptions.map(option => ({
+            ...option,
+            id: Date.now() + Math.random(), // Benzersiz ID
+            product_id: newId
+          }))
+          setOptions(prev => [...prev, ...newOptions])
         }
         resetProductForm()
         alert(editingProduct ? 'Ürün güncellendi! (Demo modu)' : 'Ürün eklendi! (Demo modu)')
@@ -435,7 +493,31 @@ export default function AdminPanel() {
       if (productResult.data && productResult.data.length > 0) {
         const productId = productResult.data[0].id
         
-
+        // Eğer düzenleme modundaysa, önce mevcut seçenekleri sil
+        if (editingProduct) {
+          await supabase
+            .from('options')
+            .delete()
+            .eq('product_id', productId)
+        }
+        
+        // Yeni seçenekleri ekle
+        if (productOptions.length > 0) {
+          const optionsToInsert = productOptions.map(option => ({
+            product_id: productId,
+            option_name: option.option_name,
+            option_price: option.option_price,
+            description: option.description
+          }))
+          
+          const optionsResult = await supabase
+            .from('options')
+            .insert(optionsToInsert)
+            
+          if (optionsResult.error) {
+            console.error('Seçenekler kaydedilirken hata:', optionsResult.error)
+          }
+        }
       }
 
       await fetchData()
@@ -561,7 +643,9 @@ export default function AdminPanel() {
       setImagePreview(product.image_url)
     }
     
-
+    // Ürünün mevcut seçeneklerini yükle
+    const productOptionsData = options.filter(opt => opt.product_id === product.id)
+    setProductOptions(productOptionsData)
     
     setShowProductForm(true)
   }
@@ -702,6 +786,7 @@ export default function AdminPanel() {
 
             <div className="grid gap-4">
               {products.map((product) => {
+                const productOptions = options.filter(opt => opt.product_id === product.id)
                 return (
                   <div key={product.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                     <div className="flex justify-between items-start">
@@ -725,6 +810,23 @@ export default function AdminPanel() {
                           <h3 className="font-semibold text-gray-900 mb-1">{product.name}</h3>
                           <p className="text-sm text-gray-600 mb-2">{product.description}</p>
                           <p className="text-lg font-bold text-green-600">{product.base_price.toFixed(2)} ₺</p>
+                          
+                          {/* Seçenekler */}
+                          {productOptions.length > 0 && (
+                            <div className="mt-2">
+                              <p className="text-xs text-gray-500 mb-1">Seçenekler ({productOptions.length}):</p>
+                              <div className="flex flex-wrap gap-1">
+                                {productOptions.map((option) => (
+                                  <span
+                                    key={option.id}
+                                    className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
+                                  >
+                                    {option.option_name} (+{option.option_price}₺)
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex space-x-2">
@@ -1029,6 +1131,95 @@ export default function AdminPanel() {
                   />
                 </div>
 
+                {/* Seçenekler Bölümü */}
+                <div className="border-t pt-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Ürün Seçenekleri / Varyasyonları</h3>
+                  
+                  {/* Mevcut Seçenekler */}
+                  {productOptions.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Mevcut Seçenekler:</h4>
+                      <div className="space-y-2">
+                        {productOptions.map((option) => (
+                          <div key={option.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-4">
+                                <span className="font-medium">{option.option_name}</span>
+                                <span className="text-green-600 font-medium">+{option.option_price}₺</span>
+                              </div>
+                              {option.description && (
+                                <p className="text-sm text-gray-600 mt-1">{option.description}</p>
+                              )}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removeOption(option.id)}
+                              className="text-red-600 hover:text-red-800 ml-2"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Yeni Seçenek Ekleme */}
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">Yeni Seçenek Ekle:</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">
+                          Seçenek Adı *
+                        </label>
+                        <input
+                          type="text"
+                          value={newOption.option_name}
+                          onChange={(e) => setNewOption(prev => ({ ...prev, option_name: e.target.value }))}
+                          className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                          placeholder="Örn: Büyük Boy, Ekstra Peynir"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">
+                          Ek Fiyat (₺)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={newOption.option_price}
+                          onChange={(e) => setNewOption(prev => ({ ...prev, option_price: parseFloat(e.target.value) || 0 }))}
+                          className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                          placeholder="0.00"
+                        />
+                      </div>
+                      <div className="md:col-span-1">
+                        <label className="block text-xs font-medium text-gray-600 mb-1">
+                          Açıklama
+                        </label>
+                        <input
+                          type="text"
+                          value={newOption.description}
+                          onChange={(e) => setNewOption(prev => ({ ...prev, description: e.target.value }))}
+                          className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                          placeholder="Opsiyonel açıklama"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={addOption}
+                      className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                    >
+                      + Seçenek Ekle
+                    </button>
+                  </div>
+                  
+                  <div className="mt-3 text-xs text-gray-500">
+                    💡 İpucu: Seçenekler ürünün temel fiyatına eklenir. Örneğin "Büyük Boy +5₺" gibi.
+                  </div>
+                </div>
 
               </div>
 
