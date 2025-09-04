@@ -120,7 +120,7 @@ export default function Home() {
         console.log('Veri yükleme testi:', dataTest)
         
         const [productsRes, optionsRes, brandsRes] = await Promise.all([
-          supabase.from('products').select('*'),
+          supabase.from('products').select('*').order('order_index', { ascending: true, nullsFirst: false }),
           supabase.from('options').select('*'),
           supabase.from('brands').select('*')
         ])

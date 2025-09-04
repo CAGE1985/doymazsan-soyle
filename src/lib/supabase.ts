@@ -17,6 +17,7 @@ export interface Product {
   image_url: string
   base_price: number
   description: string
+  order_index?: number
   created_at?: string
 }
 

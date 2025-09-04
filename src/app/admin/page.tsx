@@ -161,7 +161,7 @@ export default function AdminPanel() {
         setBrands(demoBrands)
       } else {
         const [productsRes, optionsRes, brandsRes] = await Promise.all([
-          supabase.from('products').select('*').order('created_at', { ascending: false }),
+          supabase.from('products').select('*').order('order_index', { ascending: true, nullsFirst: false }),
           supabase.from('options').select('*'),
           supabase.from('brands').select('*').order('created_at', { ascending: false })
         ])
@@ -523,10 +523,16 @@ export default function AdminPanel() {
           .eq('id', editingProduct.id)
           .select()
       } else {
-        // Create new product
+        // Create new product with order_index
+        const maxOrderIndex = products.length > 0 ? Math.max(...products.map(p => p.order_index || 0)) : -1
+        const productWithOrder = {
+          ...productForm,
+          order_index: maxOrderIndex + 1
+        }
+        
         productResult = await supabase
           .from('products')
-          .insert([productForm])
+          .insert([productWithOrder])
           .select()
       }
 
@@ -711,6 +717,79 @@ export default function AdminPanel() {
     setShowBrandForm(true)
   }
 
+  // Ürün sıralama fonksiyonları
+  const moveProductUp = async (productId: number) => {
+    const currentIndex = products.findIndex(p => p.id === productId)
+    if (currentIndex <= 0) return // Zaten en üstte
+    
+    const newProducts = [...products]
+    const temp = newProducts[currentIndex]
+    newProducts[currentIndex] = newProducts[currentIndex - 1]
+    newProducts[currentIndex - 1] = temp
+    
+    // Order index'leri güncelle
+    newProducts.forEach((product, index) => {
+      product.order_index = index
+    })
+    
+    setProducts(newProducts)
+    
+    // Veritabanını güncelle
+    if (supabase) {
+      try {
+        const updates = newProducts.map(product => ({
+          id: product.id,
+          order_index: product.order_index
+        }))
+        
+        for (const update of updates) {
+          await supabase
+            .from('products')
+            .update({ order_index: update.order_index })
+            .eq('id', update.id)
+        }
+      } catch (error) {
+        console.error('Sıralama güncellenirken hata:', error)
+      }
+    }
+  }
+  
+  const moveProductDown = async (productId: number) => {
+    const currentIndex = products.findIndex(p => p.id === productId)
+    if (currentIndex >= products.length - 1) return // Zaten en altta
+    
+    const newProducts = [...products]
+    const temp = newProducts[currentIndex]
+    newProducts[currentIndex] = newProducts[currentIndex + 1]
+    newProducts[currentIndex + 1] = temp
+    
+    // Order index'leri güncelle
+    newProducts.forEach((product, index) => {
+      product.order_index = index
+    })
+    
+    setProducts(newProducts)
+    
+    // Veritabanını güncelle
+    if (supabase) {
+      try {
+        const updates = newProducts.map(product => ({
+          id: product.id,
+          order_index: product.order_index
+        }))
+        
+        for (const update of updates) {
+          await supabase
+            .from('products')
+            .update({ order_index: update.order_index })
+            .eq('id', update.id)
+        }
+      } catch (error) {
+        console.error('Sıralama güncellenirken hata:', error)
+      }
+    }
+  }
+
 
 
   // Authentication loading
@@ -875,19 +954,42 @@ export default function AdminPanel() {
                           )}
                         </div>
                       </div>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => editProduct(product)}
-                          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                        >
-                          Düzenle
-                        </button>
-                        <button
-                          onClick={() => deleteProduct(product.id)}
-                          className="text-red-600 hover:text-red-800 text-sm font-medium"
-                        >
-                          Sil
-                        </button>
+                      <div className="flex flex-col space-y-2">
+                        {/* Sıralama Butonları */}
+                        <div className="flex space-x-1">
+                          <button
+                            onClick={() => moveProductUp(product.id)}
+                            disabled={products.findIndex(p => p.id === product.id) === 0}
+                            className="text-gray-600 hover:text-gray-800 text-sm font-medium disabled:text-gray-300 disabled:cursor-not-allowed"
+                            title="Yukarı taşı"
+                          >
+                            ↑
+                          </button>
+                          <button
+                            onClick={() => moveProductDown(product.id)}
+                            disabled={products.findIndex(p => p.id === product.id) === products.length - 1}
+                            className="text-gray-600 hover:text-gray-800 text-sm font-medium disabled:text-gray-300 disabled:cursor-not-allowed"
+                            title="Aşağı taşı"
+                          >
+                            ↓
+                          </button>
+                        </div>
+                        
+                        {/* Düzenleme Butonları */}
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => editProduct(product)}
+                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                          >
+                            Düzenle
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(product.id)}
+                            className="text-red-600 hover:text-red-800 text-sm font-medium"
+                          >
+                            Sil
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
