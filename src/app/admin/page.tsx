@@ -83,6 +83,14 @@ export default function AdminPanel() {
     option_name: '',
     option_price: 0
   })
+  
+  // Seçenek düzenleme için state'ler
+  const [editingOption, setEditingOption] = useState<Option | null>(null)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editOptionForm, setEditOptionForm] = useState({
+    option_name: '',
+    option_price: 0
+  })
 
   const [brandForm, setBrandForm] = useState({
     name: '',
@@ -207,6 +215,40 @@ export default function AdminPanel() {
   // Seçenek silme fonksiyonu
   const removeOption = (optionId: number) => {
     setProductOptions(prev => prev.filter(opt => opt.id !== optionId))
+  }
+
+  // Seçenek düzenleme fonksiyonları
+  const startEditOption = (option: Option) => {
+    setEditingOption(option)
+    setEditOptionForm({
+      option_name: option.option_name,
+      option_price: option.option_price
+    })
+    setShowEditModal(true)
+  }
+
+  const cancelEditOption = () => {
+    setEditingOption(null)
+    setShowEditModal(false)
+    setEditOptionForm({
+      option_name: '',
+      option_price: 0
+    })
+  }
+
+  const updateOption = () => {
+    if (!editingOption || !editOptionForm.option_name.trim()) {
+      alert('Seçenek adı boş olamaz!')
+      return
+    }
+
+    setProductOptions(prev => prev.map(opt => 
+      opt.id === editingOption.id 
+        ? { ...opt, option_name: editOptionForm.option_name, option_price: editOptionForm.option_price }
+        : opt
+    ))
+    
+    cancelEditOption()
   }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1153,13 +1195,24 @@ export default function AdminPanel() {
                               </div>
 
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => removeOption(option.id)}
-                              className="text-red-600 hover:text-red-800 ml-2"
-                            >
-                              🗑️
-                            </button>
+                            <div className="flex items-center space-x-2">
+                              <button
+                                type="button"
+                                onClick={() => startEditOption(option)}
+                                className="text-blue-600 hover:text-blue-800"
+                                title="Düzenle"
+                              >
+                                ✏️
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => removeOption(option.id)}
+                                className="text-red-600 hover:text-red-800"
+                                title="Sil"
+                              >
+                                🗑️
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -1311,6 +1364,63 @@ export default function AdminPanel() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Seçenek Düzenleme Modalı */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-96 max-w-md mx-4">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Seçenek Düzenle</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Seçenek Adı *
+                </label>
+                <input
+                  type="text"
+                  value={editOptionForm.option_name}
+                  onChange={(e) => setEditOptionForm(prev => ({ ...prev, option_name: e.target.value }))}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Örn: Büyük Boy, Extra Peynir"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Ek Fiyat (₺)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editOptionForm.option_price}
+                  onChange={(e) => setEditOptionForm(prev => ({ ...prev, option_price: parseFloat(e.target.value) || 0 }))}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
+                type="button"
+                onClick={cancelEditOption}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                İptal
+              </button>
+              <button
+                type="button"
+                onClick={updateOption}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Güncelle
+              </button>
+            </div>
           </div>
         </div>
       )}
