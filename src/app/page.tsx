@@ -18,7 +18,7 @@ export default function Home() {
   const [showCheckout, setShowCheckout] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showCartNotification, setShowCartNotification] = useState(false)
-  const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
+
 
   useEffect(() => {
     fetchData()
@@ -93,14 +93,14 @@ export default function Home() {
         ]
         
         const demoOptions: Option[] = [
-          { id: 1, product_id: 1, option_name: 'SADE', option_price: 0.00, description: 'Sadece ekmek ve temel malzemeler' },
-          { id: 2, product_id: 1, option_name: 'SOSİSLİ', option_price: 50.00, description: 'Patates, sosis, salam, şinitsel, kaşar peyniri, turşu, ketçap, mayonez' },
-          { id: 3, product_id: 1, option_name: 'ŞİNİTZELLİ', option_price: 50.00, description: 'Patates, şinitzel, kaşar peyniri, turşu, ketçap, mayonez' },
-          { id: 4, product_id: 1, option_name: 'ATOM', option_price: 130.00, description: 'Patates, sosis, salam, şinitzel, kaşar peyniri, turşu, ketçap, mayonez - En doyurucu seçenek!' },
-          { id: 5, product_id: 2, option_name: 'Küçük Boy', option_price: 0.00, description: 'Standart porsiyon' },
-          { id: 6, product_id: 2, option_name: 'Büyük Boy', option_price: 5.00, description: 'Büyük porsiyon' },
-          { id: 7, product_id: 4, option_name: 'Tavuklu', option_price: 0.00, description: 'Tavuk eti ile hazırlanır' },
-          { id: 8, product_id: 4, option_name: 'Etli', option_price: 8.00, description: 'Dana eti ile hazırlanır' }
+          { id: 1, product_id: 1, option_name: 'SADE', option_price: 0.00 },
+          { id: 2, product_id: 1, option_name: 'SOSİSLİ', option_price: 50.00 },
+          { id: 3, product_id: 1, option_name: 'ŞİNİTZELLİ', option_price: 50.00 },
+          { id: 4, product_id: 1, option_name: 'ATOM', option_price: 130.00 },
+          { id: 5, product_id: 2, option_name: 'Küçük Boy', option_price: 0.00 },
+          { id: 6, product_id: 2, option_name: 'Büyük Boy', option_price: 5.00 },
+          { id: 7, product_id: 4, option_name: 'Tavuklu', option_price: 0.00 },
+          { id: 8, product_id: 4, option_name: 'Etli', option_price: 8.00 }
         ]
         
         const demoBrands: Brand[] = [
@@ -151,7 +151,6 @@ export default function Home() {
 
   const openProductModal = (product: Product) => {
     setSelectedProduct(product)
-    setSelectedOptions([])
     setShowProductModal(true)
   }
 
@@ -646,7 +645,7 @@ export default function Home() {
                                   <span className="text-sm font-semibold text-green-600">+{option.option_price.toFixed(2)} ₺</span>
                                 )}
                               </div>
-                              <p className="text-xs text-orange-700 mt-1">{option.description}</p>
+
                             </div>
                             <button 
                                onClick={(e) => {
