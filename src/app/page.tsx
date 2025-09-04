@@ -354,11 +354,11 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-2 max-w-md mx-auto text-xs md:text-sm"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4 max-w-2xl lg:max-w-4xl mx-auto text-xs md:text-sm lg:text-base"
             >
-              <span className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-orange-300/30">🚀 Hızlı Teslimat</span>
-              <span className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-orange-300/30">⭐ Premium Kalite</span>
-              <span className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full border border-orange-300/30">💯 Müşteri Memnuniyeti</span>
+              <span className="bg-white/20 backdrop-blur-sm px-4 py-2 lg:px-6 lg:py-3 rounded-full border border-orange-300/30 text-center font-medium min-h-[40px] lg:min-h-[50px] flex items-center justify-center">🚀 Hızlı Teslimat</span>
+              <span className="bg-white/20 backdrop-blur-sm px-4 py-2 lg:px-6 lg:py-3 rounded-full border border-orange-300/30 text-center font-medium min-h-[40px] lg:min-h-[50px] flex items-center justify-center">⭐ Premium Kalite</span>
+              <span className="bg-white/20 backdrop-blur-sm px-4 py-2 lg:px-6 lg:py-3 rounded-full border border-orange-300/30 text-center font-medium min-h-[40px] lg:min-h-[50px] flex items-center justify-center whitespace-nowrap">💯 Müşteri Memnuniyeti</span>
             </motion.div>
           </motion.div>
         </div>
