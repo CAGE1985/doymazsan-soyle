@@ -376,6 +376,40 @@ export default function Home() {
             transition={{ delay: 0.4 }}
           >
             <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">Menümüz</h3>
+            
+            {/* Kampanya Banner */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mb-8 relative overflow-hidden rounded-2xl shadow-xl"
+            >
+              <div className="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-500 p-6 text-white relative">
+                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="relative flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                      <span className="text-3xl">🛵</span>
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold mb-1">Tüm Gel Al Siparişlerde</h4>
+                      <p className="text-white/90 text-sm">Hızlı teslimat garantisi</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="bg-white text-red-600 rounded-full px-4 py-2 font-bold text-2xl shadow-lg">
+                      10% İNDİRİM
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="text-green-400 text-xl">📞</span>
+                    <span className="text-xl font-bold">530 771 0760</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product, index) => {
                 return (
@@ -405,18 +439,20 @@ export default function Home() {
                           )}
                         </div>
                         
-                        {/* Seçenekli Butonu - Sol Üst Köşe */}
-                        <div className="absolute top-3 left-3">
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              openProductModal(product)
-                            }}
-                            className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-full px-4 py-2 text-sm font-bold hover:from-orange-600 hover:to-yellow-600 transition-all duration-300 shadow-xl border-2 border-white/50 transform hover:scale-105"
-                          >
-                            🍽️ Seçenekli
-                          </button>
-                        </div>
+                        {/* Seçenekli Butonu - Sadece seçeneği olan ürünlerde göster */}
+                        {options.filter(option => option.product_id === product.id).length > 0 && (
+                          <div className="absolute top-3 left-3">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                openProductModal(product)
+                              }}
+                              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full px-4 py-2 text-sm font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-xl border-2 border-white/70 transform hover:scale-110 backdrop-blur-sm"
+                            >
+                              ⚡ Seçenekli
+                            </button>
+                          </div>
+                        )}
 
                       </div>
                       <div className="p-4">
@@ -717,6 +753,19 @@ export default function Home() {
                   >
                     <span className="text-orange-600 text-xl">✕</span>
                   </button>
+                </div>
+                
+                {/* Kampanya Uyarısı */}
+                <div className="mb-6 bg-gradient-to-r from-red-600 via-orange-600 to-yellow-500 rounded-2xl p-4 text-white shadow-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
+                      <span className="text-2xl">🛵</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-lg">Tüm Gel Al Siparişlerde %10 İndirim!</h4>
+                      <p className="text-white/90 text-sm">📞 530 771 0760 - Hızlı teslimat garantisi</p>
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="mb-8">
