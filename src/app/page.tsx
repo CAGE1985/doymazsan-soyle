@@ -141,20 +141,107 @@ export default function Home() {
           brandsRes: { data: brandsRes.data?.length, error: brandsRes.error }
         })
 
-        if (productsRes.data) setProducts(productsRes.data)
-        if (optionsRes.data) setOptions(optionsRes.data)
-        if (brandsRes.data) setBrands(brandsRes.data)
-        
-        console.log('✅ Gerçek Supabase verileri yüklendi:', {
-          products: productsRes.data?.length || 0,
-          options: optionsRes.data?.length || 0,
-          brands: brandsRes.data?.length || 0
-        })
-        
-        // Eğer veri yoksa, kullanıcıyı bilgilendir
-        if (!productsRes.data || productsRes.data.length === 0) {
-          console.log('⚠️ Henüz ürün eklenmemiş. Admin panelinden ürün ekleyebilirsiniz.')
+        if (productsRes.data && productsRes.data.length > 0) {
+          setProducts(productsRes.data)
+        } else {
+          // Eğer veritabanında ürün yoksa veya boş döndüyse demo verileri yükle
+          console.log('⚠️ Ürün bulunamadı veya veritabanı boş, demo veriler yükleniyor...')
+          const demoProducts: Product[] = [
+            {
+              id: 1,
+              name: 'Karışık Tost',
+              image_url: 'https://picsum.photos/400/300?random=1',
+              base_price: 25.00,
+              description: 'Kaşar, sucuk, domates, salatalık ile hazırlanan lezzetli tost'
+            },
+            {
+              id: 2,
+              name: 'Kaşarlı Tost',
+              image_url: 'https://picsum.photos/400/300?random=2',
+              base_price: 20.00,
+              description: 'Bol kaşar peyniri ve taze domates ile'
+            },
+            {
+              id: 3,
+              name: 'Ayran',
+              image_url: 'https://picsum.photos/400/300?random=3',
+              base_price: 8.00,
+              description: 'Geleneksel ev yapımı soğuk ayran'
+            },
+            {
+              id: 4,
+              name: 'Sandwich',
+              image_url: 'https://picsum.photos/400/300?random=4',
+              base_price: 30.00,
+              description: 'Tavuk, marul, domates, mayonez ile hazırlanan özel sandwich'
+            },
+            {
+              id: 5,
+              name: 'Hamburger',
+              image_url: 'https://picsum.photos/400/300?random=5',
+              base_price: 35.00,
+              description: 'Özel soslu, marul, domates, soğan ile hamburger'
+            },
+            {
+              id: 6,
+              name: 'Pizza Margherita',
+              image_url: 'https://picsum.photos/400/300?random=6',
+              base_price: 45.00,
+              description: 'Mozzarella, domates sosu, fesleğen'
+            },
+            {
+              id: 7,
+              name: 'Türk Kahvesi',
+              image_url: 'https://picsum.photos/400/300?random=7',
+              base_price: 12.00,
+              description: 'Geleneksel Türk kahvesi'
+            },
+            {
+              id: 8,
+              name: 'Çay',
+              image_url: 'https://picsum.photos/400/300?random=8',
+              base_price: 5.00,
+              description: 'Taze demlenmiş çay'
+            }
+          ]
+          setProducts(demoProducts)
         }
+
+        if (optionsRes.data && optionsRes.data.length > 0) {
+          setOptions(optionsRes.data)
+        } else {
+          const demoOptions: Option[] = [
+            { id: 1, product_id: 1, option_name: 'SADE', option_price: 0.00 },
+            { id: 2, product_id: 1, option_name: 'SOSİSLİ', option_price: 50.00 },
+            { id: 3, product_id: 1, option_name: 'ŞİNİTZELLİ', option_price: 50.00 },
+            { id: 4, product_id: 1, option_name: 'ATOM', option_price: 130.00 },
+            { id: 5, product_id: 2, option_name: 'Küçük Boy', option_price: 0.00 },
+            { id: 6, product_id: 2, option_name: 'Büyük Boy', option_price: 5.00 },
+            { id: 7, product_id: 4, option_name: 'Tavuklu', option_price: 0.00 },
+            { id: 8, product_id: 4, option_name: 'Etli', option_price: 8.00 }
+          ]
+          setOptions(demoOptions)
+        }
+
+        if (brandsRes.data && brandsRes.data.length > 0) {
+          setBrands(brandsRes.data)
+        } else {
+          const demoBrands: Brand[] = [
+            { id: 1, name: 'Coca Cola', logo_url: 'https://picsum.photos/100/100?random=10' },
+            { id: 2, name: 'Ülker', logo_url: 'https://picsum.photos/100/100?random=11' },
+            { id: 3, name: 'Eti', logo_url: 'https://picsum.photos/100/100?random=12' },
+            { id: 4, name: 'Nestle', logo_url: 'https://picsum.photos/100/100?random=13' },
+            { id: 5, name: 'Pepsi', logo_url: 'https://picsum.photos/100/100?random=14' }
+          ]
+          setBrands(demoBrands)
+        }
+        
+        console.log('✅ Veriler yüklendi:', {
+          products: productsRes.data?.length || 'DEMO',
+          options: optionsRes.data?.length || 'DEMO',
+          brands: brandsRes.data?.length || 'DEMO'
+        })
+
       }
     } catch (error) {
       console.error('Veri yüklenirken hata:', error)
