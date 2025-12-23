@@ -19,6 +19,7 @@ export default function Home() {
   const [showCheckout, setShowCheckout] = useState(false)
   const [loading, setLoading] = useState(true)
   const [showCartNotification, setShowCartNotification] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
 
   console.log('🔄 useEffect tanımlanıyor...')
@@ -91,6 +92,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Veri yüklenirken hata:', error)
+      setError('Veritabanına bağlanılamadı. Lütfen Supabase projesinin aktif olduğundan emin olun.')
     } finally {
       setLoading(false)
     }
